@@ -216,15 +216,42 @@ namespace CA_Project
                     }
                 }
             }
+
+            // displays route
+            public string getTrip(string init, string dest)
+            {
+                int i, d;
+                char initChar = init.ToCharArray()[0];
+                char destChar = dest.ToCharArray()[0];
+                i = (int)initChar - 65;
+                d = (int)destChar - 65;
+                string route = "Route: " + init.ToString();
+                foreach (Path instance in matrix[i, d].route)
+                {
+                    route += " --> " + instance.destination.name + " (cost: " + instance.cost + 
+                        " )";
+                }
+                route += " OVERALL: " + matrix[i, d].overallCost().ToString();
+                return route;
+            }
         }
 
         static void Main(string[] args)
         {
-            int size = 5; // number of vertex
+            int size; // number of vertex
+            string? s; // to check the null
+            Console.Write("Please enter amount of vertices (1-27): ");
+            while((s = Console.ReadLine()) == null || int.Parse(s) < 1 || int.Parse(s) > 27) // Checks if user entered wrong amount or null
+            {
+                Console.WriteLine("Null Exception. Please re-enter the digit (1-27)");
+            }
+            size = int.Parse(s);
             Matrix matrix = new Matrix(size); // create initial weight matrix
             Matrix[] matrices = new Matrix[size + 1]; // collection of matrixes for every vertex
             matrix.createPaths();
             matrix.displayArray();
+
+            Console.WriteLine("Optimizing..........");
 
             matrices[0] = matrix; // let matrices[0] be initial matrix
             for (int i = 1; i <= size; i++)
@@ -233,6 +260,15 @@ namespace CA_Project
                 matrices[i].recount(i - 1, matrices[i - 1]);
             }
             matrices[size].displayArray(); // display final array
+
+            // asks to choose initial point and destination
+            Console.Write("Please enter the initial and destination points.\nInitial point: ");
+            string? init;
+            init = Console.ReadLine();
+            Console.Write("Destination point: ");
+            string? dest;
+            dest = Console.ReadLine();
+            Console.WriteLine(matrix.getTrip(init, dest));
         }
     }
 }
