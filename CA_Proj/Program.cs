@@ -47,7 +47,7 @@ namespace CA_Project
         {
             public bool isSet;
             public Vertex initPoint = new Vertex();
-            private List<Path> route = new List<Path>();
+            public List<Path> route = new List<Path>();
 
             public Route()
             {
@@ -194,12 +194,22 @@ namespace CA_Project
                         }
                         else
                         {
-                            if (prev.getElement(j, k).overallCost() != Math.Min(prev.getElement(j, k).overallCost(), matrix[j, i].overallCost() + matrix[i, k].overallCost()))
+                            if (prev.getElement(j, k).overallCost() != Math.Min(prev.getElement(j, k).overallCost(), prev.getElement(j, i).overallCost() + prev.getElement(i, k).overallCost()))
                             {
-                                foreach (Path path in matrix[j, i].getRoute())
+                                //matrix[j, k].route.RemoveAt(matrix[j, k].route.Count() - 1);
+                                matrix[j, k].route.Clear();
+                                foreach (Path instance in prev.getElement(j, i).route)
                                 {
-                                    matrix[j, k].insertRoadPoint(path.destination, path.cost, 1);
+                                    matrix[j, k].route.Add(instance);
                                 }
+                                foreach (Path instance in prev.getElement(i, k).route)
+                                {
+                                    matrix[j, k].route.Add(instance);
+                                }
+                            }
+                            else
+                            {
+                                matrix[j, k] = prev.getElement(j, k);
                             }
                             // choose minimum between path through vertex and previos path
                         }
