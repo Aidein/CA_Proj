@@ -49,6 +49,16 @@ namespace CA_Project
             public Vertex initPoint = new Vertex();
             private List<Path> route = new List<Path>();
 
+            public Route()
+            {
+                isSet = false;
+            }
+
+            public List<Path> getRoute()
+            {
+                return route;
+            }
+
             public void insertRoadPoint(Vertex? vertex, int cost, int index)
             {
                 Path instance = new Path();
@@ -74,6 +84,11 @@ namespace CA_Project
                 }
                 return cost;
             }
+
+            public void setFalse()
+            {
+                isSet = false;
+            }
         }
 
         class Matrix // class for weight matrix
@@ -82,9 +97,18 @@ namespace CA_Project
             List<Vertex> vertices = new List<Vertex>();
             Route[,] matrix; // declaration of two-dimensional matrix
             Random random = new Random(); // for randomizing
+
             public Matrix(int size = 5) // parametrized constructor. By default 5 vertices
             {
+                this.size = size;
                 matrix = new Route[size, size];
+                for (int i = 0; i < size; i++)
+                {
+                    for (int j = 0; j < size; j++)
+                    {
+                        matrix[i, j] = new Route();
+                    }
+                }
                 Console.Write("Verteces created: ");
                 // creates number of vertices
                 for (int j = 65; j < size + 65; j++)
@@ -96,14 +120,14 @@ namespace CA_Project
                 }
                 Console.Write("\n");
 
-                for (int j = 0; j < size; j++) // columns
-                {
-                    for (int k = 0; k < size; k++) // rows
-                    {
-                        matrix[j, k].isSet = false; // make diagonals all elements initially zero
-                    }
-                }
-                this.size = size;
+                //for (int j = 0; j < size; j++) // columns
+                //{
+                //    for (int k = 0; k < size; k++) // rows
+                //    {
+                //        matrix[j, k].setFalse(); // make diagonals all elements initially zero
+                //    }
+                //}
+                //this.size = size;
             }
             public void createPaths() // create rendomized array
             {
@@ -149,7 +173,7 @@ namespace CA_Project
                     Console.Write(letter + "  "); // for letters in column
                     for (int k = 0; k < size; k++) // display matrix elements
                     {
-                        Console.Write((matrix[j, k].overallCost() < 10 ? " " : "") + matrix[j, k] + "  "); // to display single digits 
+                        Console.Write((matrix[j, k].overallCost() < 10 ? " " : "") + matrix[j, k].overallCost() + "  "); // to display single digits 
                         // at two spaces/ EX: 0 would be " 0", 7 = " 7"...
                     }
                     Console.WriteLine("\n");
@@ -172,7 +196,10 @@ namespace CA_Project
                         {
                             if (prev.getElement(j, k).overallCost() != Math.Min(prev.getElement(j, k).overallCost(), matrix[j, i].overallCost() + matrix[i, k].overallCost()))
                             {
-                                Console.WriteLine("Yeah, It is working probably)))");
+                                foreach (Path path in matrix[j, i].getRoute())
+                                {
+                                    matrix[j, k].insertRoadPoint(path.destination, path.cost, 1);
+                                }
                             }
                             // choose minimum between path through vertex and previos path
                         }
