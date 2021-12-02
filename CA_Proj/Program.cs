@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace CA_Project
-{
+{                                                
     internal class Program
     {
         // struct value type data type for matrix node definition
@@ -40,23 +40,18 @@ namespace CA_Project
             {
                 cost = 0;
             }
+            
         }
-
-        // struct value type data type for route from one vertex to other verteces definition
+        
+        // struct value type data type for route from one vertex to other vertexes definition
         class Route
         {
             public bool isSet;
-            public Vertex initPoint = new Vertex();
             public List<Path> route = new List<Path>();
 
             public Route()
             {
                 isSet = false;
-            }
-
-            public List<Path> getRoute()
-            {
-                return route;
             }
 
             public void insertRoadPoint(Vertex? vertex, int cost, int index)
@@ -65,14 +60,6 @@ namespace CA_Project
                 instance.destination = vertex;
                 instance.cost = cost;
                 route.Insert(index, instance);
-            }
-
-            public void removeRoadPoint(Vertex vertex, int cost)
-            {
-                Path instance = new Path();
-                instance.destination = vertex;
-                instance.cost = cost;
-                route.Remove(instance);
             }
 
             public int overallCost()
@@ -84,11 +71,6 @@ namespace CA_Project
                 }
                 return cost;
             }
-
-            public void setFalse()
-            {
-                isSet = false;
-            }
         }
 
         class Matrix // class for weight matrix
@@ -96,7 +78,7 @@ namespace CA_Project
             int size; // size of matrix
             List<Vertex> vertices = new List<Vertex>();
             Route[,] matrix; // declaration of two-dimensional matrix
-            Random random = new Random(); // for randomizing
+            
 
             public Matrix(int size = 5) // parametrized constructor. By default 5 vertices
             {
@@ -109,7 +91,7 @@ namespace CA_Project
                         matrix[i, j] = new Route();
                     }
                 }
-                Console.Write("Verteces created: ");
+                Console.Write("Vertexes created: ");
                 // creates number of vertices
                 for (int j = 65; j < size + 65; j++)
                 {
@@ -118,18 +100,14 @@ namespace CA_Project
                     vertices.Add(instance);
                     Console.Write(instance.name + " ");
                 }
-                Console.Write("\n");
-
-                //for (int j = 0; j < size; j++) // columns
-                //{
-                //    for (int k = 0; k < size; k++) // rows
-                //    {
-                //        matrix[j, k].setFalse(); // make diagonals all elements initially zero
-                //    }
-                //}
-                //this.size = size;
+                Console.Write("\n\n");
             }
-            public void createPaths() // create rendomized array
+            public int trafficUpdate() 
+            {
+                Random random = new Random(); // for randomizing
+                return random.Next(1,100);
+            }
+            public void createPaths() // create randomized array
             {
                 int index;
 
@@ -144,8 +122,10 @@ namespace CA_Project
                         }
                         else
                         {
-                            matrix[k, j].insertRoadPoint(vertices.Find(x => x.name == ((char)(j + 65)).ToString()), random.Next(1, 100), 0); // assign values from 1 to 99 (function for roads)
-                            vertices[index].addAdjV(vertices.Find(x => x.name == ((char)(j + 65)).ToString()), matrix[k, j].overallCost());
+                            matrix[k, j].insertRoadPoint(vertices.Find(x => x.name == ((char)(j + 65)).ToString()), 
+                            trafficUpdate(), 0); // assign values from 1 to 99 (function for roads)
+                            vertices[index].addAdjV(vertices.Find(x => x.name == ((char)(j + 65)).ToString()), 
+                            matrix[k, j].overallCost());
                         }
                     }
                 }
@@ -251,7 +231,7 @@ namespace CA_Project
             matrix.createPaths();
             matrix.displayArray();
 
-            Console.WriteLine("Optimizing..........");
+            Console.WriteLine("Optimizing ..........\n");
 
             matrices[0] = matrix; // let matrices[0] be initial matrix
             for (int i = 1; i <= size; i++)
