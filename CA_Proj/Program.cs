@@ -5,7 +5,7 @@ namespace CA_Project
 {                                                
     internal class Program
     {
-        // struct value type data type for matrix node definition
+        // class for vertex
         class Vertex
         {
             public string name = "";
@@ -30,7 +30,7 @@ namespace CA_Project
             }
         }
 
-        // struct value type data type for matrix node adj vertexes paths definition
+        // class for paths
         class Path
         {
             public int cost;
@@ -40,10 +40,9 @@ namespace CA_Project
             {
                 cost = 0;
             }
-            
         }
         
-        // struct value type data type for route from one vertex to other vertexes definition
+        // class for route
         class Route
         {
             public bool isSet;
